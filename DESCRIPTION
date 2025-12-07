@@ -1,0 +1,15 @@
+Package: collegehelper
+Title: Simple Helpers for Homework Data
+Version: 0.0.0.9000
+Authors@R: 
+    person("Suvan", "Giri",
+           email = "suvangiri@usf.edu",
+           role = c("aut", "cre"))
+Description: A tiny package with a few functions to summarize homework scores, make quick plots, and show basic stats for an R programming class.
+Depends: R (>= 3.1.2)
+Imports: ggplot2
+License: MIT + file LICENSE
+LazyData: true
+URL: https://github.com/SuviG36/collegehelper
+BugReports: https://github.com/SuviG36/collegehelper/issues
+RoxygenNote: 7.3.3

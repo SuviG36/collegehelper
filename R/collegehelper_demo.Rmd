@@ -1,0 +1,213 @@
+---
+title: "collegehelper Package Demo"
+author: "Suvan Giri"
+date: "2025-12-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+# Load the package (use ONE of these methods):
+# Method 1: If package is installed
+# library(collegehelper)
+
+# Method 2: If package isn't installed yet (recommended for now)
+devtools::load_all()
+
+# Method 3: Emergency backup - define functions here
+# hw_mean <- function(x) mean(x, na.rm = TRUE)
+# (add other functions if needed)
+```
+
+## Introduction to R Markdown
+
+This document demonstrates the **collegehelper** package that I created for my R Programming final project. R Markdown is a really useful tool because it lets you combine regular text, executable R code, and mathematical notation all in one document. When you click the **Knit** button, R Studio runs all the code chunks and generates a nicely formatted HTML page with the results embedded.
+
+R Markdown is way better than copying and pasting results into Word because everything stays reproducible - if the data changes, you just re-knit and all the numbers and graphs update automatically.
+
+### Why R Markdown Matters
+
+One of the coolest things about R Markdown is that you can include mathematical formulas using LaTeX syntax. For example, here's an inline equation: $y = \alpha + \beta x + \epsilon$. This is the classic linear regression formula.
+
+You can also display equations on their own line like this:
+
+$$
+\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i
+$$
+
+This is the formula for the arithmetic mean, which is exactly what my `hw_mean()` function calculates!
+
+## About the collegehelper Package
+
+The **collegehelper** package provides simple functions to help college students analyze their homework scores. It includes three main functions:
+
+1. `hw_mean()` - calculates the mean while handling missing values
+2. `hw_stats()` - creates an S3 object with comprehensive statistics
+3. `hw_hist()` - generates a histogram visualization
+
+Let me show you how each function works with some example data.
+
+## Creating Sample Data
+
+First, let's create a vector of homework scores. I'm including an `NA` value to demonstrate how the functions handle missing data:
+
+```{r create-data}
+# Sample homework scores from a hypothetical semester
+scores <- c(80, 90, 75, 100, NA, 85, 92, 78, 88, 95)
+
+# Display the scores
+print(scores)
+```
+
+## Function 1: Basic Mean Calculation
+
+The `hw_mean()` function calculates the average score while automatically removing any missing values. This is super helpful because you don't have to remember to add `na.rm = TRUE` every time:
+
+```{r mean-demo}
+# Calculate the mean score
+average_score <- hw_mean(scores)
+print(paste("Average homework score:", round(average_score, 2)))
+```
+
+This function also includes defensive programming - it checks that the input is numeric before trying to calculate the mean. If you pass in text or other non-numeric data, it will give a clear error message instead of crashing.
+
+## Function 2: Comprehensive Statistics (S3 Object)
+
+The `hw_stats()` function is more advanced. It returns an S3 object that contains multiple statistics about your homework scores:
+
+```{r stats-demo}
+# Get comprehensive statistics
+stats_result <- hw_stats(scores)
+
+# Display the statistics using the custom print method
+print(stats_result)
+```
+
+This demonstrates the S3 class system - the `hw_stats` object has a custom `print.hw_stats()` method that displays the information in a clean, readable format instead of just showing a raw list.
+
+Let's access some individual statistics:
+
+```{r access-stats}
+# Access specific statistics from the S3 object
+cat("The standard deviation is:", round(stats_result$sd, 2), "\n")
+cat("Score range:", stats_result$min, "to", stats_result$max, "\n")
+cat("Total assignments:", stats_result$n, "\n")
+cat("Missing assignments:", stats_result$n_missing, "\n")
+```
+
+## Function 3: Histogram Visualization
+
+Finally, the `hw_hist()` function creates a histogram to visualize the distribution of scores. This helps you quickly see patterns like whether most scores are clustered together or spread out:
+
+```{r histogram-demo, fig.width=7, fig.height=5}
+# Create a histogram with 8 bins
+hw_hist(scores, bins = 8)
+```
+
+The histogram shows that most of my scores are in the 80-95 range, which is pretty good! You can adjust the number of bins to change how detailed the visualization is:
+
+```{r histogram-detailed, fig.width=7, fig.height=5}
+# Create a more detailed histogram with 10 bins
+hw_hist(scores, bins = 10)
+```
+
+## Defensive Programming Demo
+
+One important aspect of this package is defensive programming. Here's what happens when you try to pass invalid input to the functions:
+
+```{r error-demo, error=TRUE}
+# Try to calculate mean of text (this will show an error)
+bad_input <- c("A", "B", "C")
+hw_mean(bad_input)
+```
+
+Instead of crashing with a confusing error, the function gives you a clear message about what went wrong. This is much more helpful for users!
+
+## Additional Examples
+
+Let's test the functions with some different scenarios:
+
+```{r additional-examples}
+# Example 1: Perfect scores (no missing data)
+perfect_scores <- c(95, 98, 100, 97, 99, 100)
+cat("Perfect semester average:", hw_mean(perfect_scores), "\n\n")
+
+# Example 2: More missing data
+incomplete_scores <- c(80, NA, 75, NA, 85, 90, NA)
+incomplete_stats <- hw_stats(incomplete_scores)
+print(incomplete_stats)
+```
+
+```{r viz-comparison, fig.width=7, fig.height=5}
+# Visualize the incomplete scores
+hw_hist(incomplete_scores, bins = 6)
+```
+
+## Comparing My Package to Base R
+
+Here's why this package is useful compared to writing everything manually:
+
+```{r comparison}
+# Without collegehelper (the old, tedious way):
+raw_scores <- c(80, 90, 75, 100, NA, 85)
+manual_mean <- mean(raw_scores, na.rm = TRUE)
+manual_sd <- sd(raw_scores, na.rm = TRUE)
+manual_n <- sum(!is.na(raw_scores))
+cat("Manual calculation:\n")
+cat("Mean:", manual_mean, "\n")
+cat("SD:", manual_sd, "\n")
+cat("N:", manual_n, "\n\n")
+
+# With collegehelper (much simpler!):
+cat("Using collegehelper:\n")
+hw_stats(raw_scores)
+```
+
+The package saves time and reduces the chance of making mistakes!
+
+## Final Thoughts
+
+This package demonstrates several key concepts from the R Programming course:
+
+### Module 10: DESCRIPTION File
+- Complete DESCRIPTION file with all required metadata
+- Proper version numbering (0.0.0.9000 for development)
+- Author information and package description
+- Dependency specification (only base R needed)
+- CC0 license for open educational use
+
+### Module 11: Debugging & Defensive Programming
+- Input validation with clear error messages
+- Handling of missing values (NA)
+- Type checking to prevent crashes
+- Fixed the Tukey outlier bug (using `&` instead of `&&` for element-wise operations)
+
+### Module 12: R Markdown Documentation
+- Mix of text, code, and mathematical notation
+- LaTeX equations: $\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i$
+- Multiple code chunks with real outputs
+- Data visualizations embedded in the document
+- Reproducible analysis workflow
+
+### Object-Oriented Programming
+- S3 class system (`hw_stats` class)
+- Custom print method (`print.hw_stats()`)
+- Clean, organized output structure
+
+### Package Features Summary
+- **3 unique functions**: `hw_mean()`, `hw_stats()`, `hw_hist()`
+- **0 external dependencies**: Uses only base R
+- **S3 object system**: Custom class with print method
+- **Defensive programming**: Input validation throughout
+- **Complete documentation**: Roxygen2 help files for all functions
+
+This makes collegehelper a clean, production-ready student package that actually solves a real problem - tracking homework performance throughout the semester!
+
+## Source Code
+
+All source code is available on GitHub at: https://github.com/SuviG36/collegehelper.git
+
+---
+
+*Document generated on `r Sys.Date()` using R Markdown. The complete package includes this vignette, function documentation, and all source code.*
